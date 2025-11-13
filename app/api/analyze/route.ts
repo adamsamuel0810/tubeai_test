@@ -104,8 +104,8 @@ export async function POST(request: NextRequest) {
         topics,
         channelInfo.title,
         videos,
-        news,
-        redditPosts
+        news.map(n => ({ title: n.title, url: n.url })),
+        (redditPosts as any[]).map(p => ({ title: p.title, subreddit: p.subreddit || 'unknown' }))
       )
       if (ideas.length < 5) {
         const fallbackIdeas = topics.slice(ideas.length, 5).map((topic, idx) => ({
@@ -143,12 +143,12 @@ export async function POST(request: NextRequest) {
         videoId: v.id,
       })),
       topics,
-      news: (news || []).map(n => ({
+      news: (news || []).map((n: any) => ({
         title: n.title || 'Untitled',
         url: n.url || '#',
         source: n.source || 'Unknown',
       })),
-      redditPosts: (redditPosts || []).map(p => ({
+      redditPosts: (redditPosts || []).map((p: any) => ({
         title: p.title || 'Untitled',
         url: p.url || '#',
         subreddit: p.subreddit || 'unknown',
